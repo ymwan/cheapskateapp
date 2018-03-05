@@ -4,11 +4,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -16,18 +21,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ProgressBar;
-import com.android.volley.toolbox.JsonArrayRequest;
 
 
 public class ViewProducts extends AppCompatActivity {
 
-    List<DataAdapter> DataAdapterClassList;
+    private ArrayList<DataAdapter> dataAdapterArrayList = new ArrayList<>();
 
     RecyclerView recyclerView;
 
@@ -43,7 +41,7 @@ public class ViewProducts extends AppCompatActivity {
 
     RequestQueue requestQueue ;
 
-    String HTTP_SERVER_URL = "https://192.168.56.1/android_login_api/ProductDetails.php";
+    String HTTP_SERVER_URL = "http://192.168.1.154:8888/ym_php/ProductDetails.php";
 
     View ChildView ;
 
@@ -54,8 +52,6 @@ public class ViewProducts extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.view_products);
-
-        DataAdapterClassList = new ArrayList<>();
 
         Products = new ArrayList<>();
 
@@ -71,6 +67,10 @@ public class ViewProducts extends AppCompatActivity {
 
         // JSON data web call function call from here.
         JSON_WEB_CALL();
+
+        recyclerViewadapter = new RecyclerViewAdapter(dataAdapterArrayList, this);
+
+        recyclerView.setAdapter(recyclerViewadapter);
 
         //RecyclerView Item click listener code starts from here.
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
@@ -165,14 +165,13 @@ public class ViewProducts extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            DataAdapterClassList.add(GetDataAdapter2);
+            dataAdapterArrayList.add(GetDataAdapter2);
 
         }
 
         progressBar.setVisibility(View.GONE);
 
-        recyclerViewadapter = new RecyclerViewAdapter(DataAdapterClassList, this);
-
-        recyclerView.setAdapter(recyclerViewadapter);
+        // refresh the adapter
+        recyclerViewadapter.notifyDataSetChanged();
     }
 }
