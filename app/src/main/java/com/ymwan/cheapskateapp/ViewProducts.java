@@ -1,5 +1,6 @@
 package com.ymwan.cheapskateapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,8 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.support.v7.widget.SearchView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,7 +44,9 @@ public class ViewProducts extends AppCompatActivity {
 
     RequestQueue requestQueue ;
 
-    String HTTP_SERVER_URL = "http://192.168.1.154:8888/ym_php/ProductDetails.php";
+    SearchView sv;
+
+    String HTTP_SERVER_URL = "http://10.212.78.159/android_login_api/ProductDetails.php";
 
     View ChildView ;
 
@@ -56,6 +61,8 @@ public class ViewProducts extends AppCompatActivity {
         Products = new ArrayList<>();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView1);
+
+        sv= (SearchView) findViewById(R.id.mSearch);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -112,6 +119,30 @@ public class ViewProducts extends AppCompatActivity {
             }
         });
 
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                //FILTER AS YOU TYPE
+                recyclerViewadapter.getFilter().filter(query);
+                return false;
+            }
+        });
+
+        Button viewShoppingCart = (Button) findViewById(R.id.ButtonViewCart);
+        viewShoppingCart.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent viewShoppingCartIntent = new Intent(getBaseContext(), ShoppingCartActivity.class);
+                startActivity(viewShoppingCartIntent);
+            }
+        });
+
     }
 
     public void JSON_WEB_CALL(){
@@ -149,7 +180,7 @@ public class ViewProducts extends AppCompatActivity {
 
                 GetDataAdapter2.setProductName(json.getString("product_name"));
 
-                GetDataAdapter2.setProductPrice(json.getString("product_price"));
+                GetDataAdapter2.setProductPrice(json.getDouble("product_price"));
 
                 //Adding subject name here to show on click event.
                 Products.add(json.getString("product_name"));
@@ -170,6 +201,7 @@ public class ViewProducts extends AppCompatActivity {
         }
 
         progressBar.setVisibility(View.GONE);
+
 
         // refresh the adapter
         recyclerViewadapter.notifyDataSetChanged();
