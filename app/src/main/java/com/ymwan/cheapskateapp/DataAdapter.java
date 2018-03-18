@@ -8,7 +8,7 @@ package com.ymwan.cheapskateapp;
 public class DataAdapter {
 
     String productName;
-    String productPrice;
+    double productPrice;
     String productDate;
     String productStore;
 
@@ -23,15 +23,16 @@ public class DataAdapter {
     }
 
 
-    public String getProductPrice() {
+    public double getProductPrice() {
 
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice1) {
+    public void setProductPrice(double productPrice1) {
 
         this.productPrice = productPrice1;
     }
+
     public String getProductDate() {
 
         return productDate;
@@ -51,4 +52,5 @@ public class DataAdapter {
 
         this.productStore = productStore;
     }
+
 }
